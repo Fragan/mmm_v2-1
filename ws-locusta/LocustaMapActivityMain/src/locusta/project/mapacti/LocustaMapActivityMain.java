@@ -1,6 +1,7 @@
 package locusta.project.mapacti;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -11,17 +12,20 @@ import locusta.project.entitiesAndroid.User;
 import locusta.project.item.ItemizedOverlaysInitialization;
 import locusta.project.item.MapItemizedOverlay;
 import locusta.project.location.UserLocationOverlay;
+import locusta.project.speech.TTSService;
 import locusta.project.temporarySave.TemporarySave;
 import locusta.project.webClient.WebClient;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
+import android.speech.tts.TextToSpeech.OnInitListener;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
@@ -32,7 +36,7 @@ import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
 
-public class LocustaMapActivityMain extends MapActivity {
+public class LocustaMapActivityMain extends MapActivity implements OnInitListener {
 	
 	private MapView mapView;
 	private MapController mapController;
@@ -263,11 +267,46 @@ public class LocustaMapActivityMain extends MapActivity {
 		addEvents(loadEvents());
 	}
 	
-	@SuppressLint("WorldWriteableFiles")
+
 	private void loadSettingsActivity() {
 		SharedPreferences sp = getSharedPreferences("locusta_settings", Activity.MODE_WORLD_WRITEABLE);
     	radius = sp.getInt("radius", 100);
     	specificEventTypeId = sp.getInt("idEventType", -1);
 	}
+	
+	// ------------------------    Speech recognition
+	private static final int VOICE_RECOGNITION_REQUEST = 0x10101;
+	
+	public void speakBtnClicked(View v){
+		System.out.println("speak cliqué!!");
+		Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+		intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+				RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+		intent.putExtra(RecognizerIntent.EXTRA_PROMPT,
+				"Please speak slowly and enunciate clearly.");
+		startActivityForResult(intent, VOICE_RECOGNITION_REQUEST);
+	}
 
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (resultCode != RESULT_OK && requestCode == VOICE_RECOGNITION_REQUEST)
+			return;
+		if (requestCode == VOICE_RECOGNITION_REQUEST && resultCode == RESULT_OK) {
+			ArrayList<String> matches = data
+					.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+
+			String firstMatch = matches.get(0);
+			
+			System.out.println(firstMatch);
+			
+			Intent intentTTS = new Intent(this.getApplicationContext(), TTSService.class);
+			intentTTS.putExtra("textToSay", firstMatch);
+			startService(intentTTS);
+			
+		}
+	}
+
+	@Override
+	public void onInit(int arg0) {
+	}
 }

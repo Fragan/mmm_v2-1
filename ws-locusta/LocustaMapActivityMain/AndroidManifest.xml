@@ -42,14 +42,8 @@
             android:theme="@android:style/Theme.Black" >
         </activity>
 
-        <service android:name=".TTSService" >
+        <service android:name="locusta.project.speech.TTSService" >
         </service>
-
-        <activity
-            android:name="locusta.project.speech.SampleSpeechActivity"
-            android:exported="true"
-            android:theme="@android:style/Theme.Black" >
-        </activity>
     </application>
 
 </manifest>

@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import locusta.project.mapacti.LocustaMapActivityMain;
-import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
 
 /*
@@ -13,7 +12,6 @@ import android.graphics.drawable.Drawable;
 public class ItemizedOverlaysInitialization {
 
 
-	@SuppressLint("UseSparseArrays")
 	private Map<Integer, MapItemizedOverlay> itemzedOverlays = new HashMap<Integer, MapItemizedOverlay>();
 	
 	/**
