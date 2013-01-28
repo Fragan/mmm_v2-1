@@ -13,6 +13,7 @@ import locusta.project.item.MapItemizedOverlay;
 import locusta.project.location.UserLocationOverlay;
 import locusta.project.temporarySave.TemporarySave;
 import locusta.project.webClient.WebClient;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -262,6 +263,7 @@ public class LocustaMapActivityMain extends MapActivity {
 		addEvents(loadEvents());
 	}
 	
+	@SuppressLint("WorldWriteableFiles")
 	private void loadSettingsActivity() {
 		SharedPreferences sp = getSharedPreferences("locusta_settings", Activity.MODE_WORLD_WRITEABLE);
     	radius = sp.getInt("radius", 100);
