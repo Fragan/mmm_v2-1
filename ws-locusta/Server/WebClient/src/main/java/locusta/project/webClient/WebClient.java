@@ -374,8 +374,8 @@ public class WebClient {
 	//System.out.println(e.getDescription());
 		List<EventType> ets = wc.getEventTypes();
 		System.out.println(ets.size());
-		//List<Event> events = wc.lookEventsAround(-1.661124, 48.102674, 130);
-		//System.out.println(events.size());
+//		List<Event> events = wc.lookEventsAround(-1.661124, 48.102674, 130);
+//		System.out.println(events.size());
 ////		//
 		// User titi = wc.getUserByUserName("titi");
 		// toto.addFriend(titi);
