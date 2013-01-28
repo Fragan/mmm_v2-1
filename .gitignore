@@ -1,0 +1,12 @@
+*~
+*/target
+bin/
+.settings
+.project
+.classpath
+*/.metadata/*
+Servers
+Thumbs.db
+*.class
+*.zip
+.DS_Store
