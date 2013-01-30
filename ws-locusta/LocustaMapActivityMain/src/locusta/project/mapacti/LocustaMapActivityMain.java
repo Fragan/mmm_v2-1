@@ -6,8 +6,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import utils.Clock;
-
 import locusta.project.entitiesAndroid.Event;
 import locusta.project.entitiesAndroid.EventType;
 import locusta.project.entitiesAndroid.User;
@@ -17,6 +15,7 @@ import locusta.project.location.UserLocationOverlay;
 import locusta.project.speech.TTSService;
 import locusta.project.temporarySave.TemporarySave;
 import locusta.project.webClient.WebClient;
+import utils.Clock;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -46,7 +45,7 @@ public class LocustaMapActivityMain extends MapActivity implements
 	private Map<Integer, MapItemizedOverlay> itemzedOverlays;
 
 	private int radius = 1000; // The event distance in meter
-	private int zoomLevel = 17; // Map zoom
+	private int zoomLevel = 17; // Default map zoom
 	private UserLocationOverlay userLocationOverlay;
 
 	private User currentUser;
@@ -89,6 +88,10 @@ public class LocustaMapActivityMain extends MapActivity implements
 
 		// Load the web client
 		webCient = new WebClient();
+		if (webCient.getUserById(1) == null) {
+			showToast("Sorry, server is down !"); // TODO : show error activity
+			System.exit(0);
+		}
 		// Default options
 		loadSettingsActivity();
 		// Load default events
@@ -226,7 +229,8 @@ public class LocustaMapActivityMain extends MapActivity implements
 	 */
 	private OverlayItem createOverlayItem(Event event) {
 		GeoPoint point = new GeoPoint((int) (event.getLatitude() * 1E6), (int) (event.getLongitude() * 1E6));
-		return new OverlayItem(point, event.getName(), event.getDescription());
+		return new OverlayItem(point, event.getName(), String.format(getResources().getString(R.string.event_description),
+				event.getOwner().getUserName(), event.getStartDate(), event.getEndDate(), event.getDescription()));
 	}
 
 	/**
@@ -236,6 +240,15 @@ public class LocustaMapActivityMain extends MapActivity implements
 		for (MapItemizedOverlay item : itemzedOverlays.values()) {
 			item.clearOverlays();
 		}
+	}
+	
+	/**
+	 * Refresh event list
+	 */
+	public void refreshEvents() {
+		showToast("Refresh");
+		clearEvents();
+		addEvents(loadEvents());
 	}
 
 	/**
@@ -283,6 +296,12 @@ public class LocustaMapActivityMain extends MapActivity implements
 	protected void onResume() {
 		super.onResume();
 		
+		webCient = new WebClient();
+		if (webCient.getUserById(1) == null) {
+			showToast("Sorry, server is down !"); // TODO : show error activity
+			System.exit(0);
+		}
+		
 		// Load settings and add new events
 		loadSettingsActivity();
 		
@@ -299,14 +318,7 @@ public class LocustaMapActivityMain extends MapActivity implements
 	protected void onPause() {
 		super.onPause();
 		timer.cancel();
-	}
-
-	/**
-	 * Refresh event list
-	 */
-	public void refreshEvents() {
-		clearEvents();
-		addEvents(loadEvents());
+		webCient = null;
 	}
 
 	private void loadSettingsActivity() {
