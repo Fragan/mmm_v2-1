@@ -296,12 +296,27 @@ public class LocustaMapActivityMain extends MapActivity implements OnInitListene
 			ArrayList<String> matches = data
 					.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
 
-			String firstMatch = matches.get(0);
+			System.out.println("Voici les matches");
+			for(String match : matches){
+				System.out.println(match);
+			}
 			
-			System.out.println(firstMatch);
+//			String firstMatch = matches.get(0);
+//			String titre = matches.get(1);
+//			String match3 = matches.get(2); // type
+//			String type = matches.get(3);
+//			
+//			if(firstMatch.equals("ajouter")){
+//				Event event = new Event(titre,)
+//				event.setEventType(type);
+//				webCient.addEvent(event)
+//			}
+			
+			
+			System.out.println(matches.get(0));
 			
 			intentTTS = new Intent(this.getApplicationContext(), TTSService.class);
-			intentTTS.putExtra("textToSay", firstMatch);
+			intentTTS.putExtra("textToSay", matches.get(0));
 			startService(intentTTS);
 			
 		}
