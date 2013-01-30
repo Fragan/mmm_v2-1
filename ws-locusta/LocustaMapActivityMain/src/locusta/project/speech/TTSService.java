@@ -47,9 +47,6 @@ public class TTSService extends Service implements OnInitListener,
 			}
 
 		}).start();
-
-		stopSelf();
-
 	}
 
 	@Override
@@ -59,6 +56,7 @@ public class TTSService extends Service implements OnInitListener,
 
 	@Override
 	public void onDestroy() {
+		System.out.println("ondestroy");
 		mTTS.shutdown();
 		super.onDestroy();
 	}

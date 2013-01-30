@@ -51,6 +51,7 @@ public class LocustaMapActivityMain extends MapActivity implements OnInitListene
 	private WebClient webCient;
 	private Integer specificEventTypeId = -1;
 
+	private Intent intentTTS;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -278,7 +279,6 @@ public class LocustaMapActivityMain extends MapActivity implements OnInitListene
 	private static final int VOICE_RECOGNITION_REQUEST = 0x10101;
 	
 	public void speakBtnClicked(View v){
-		System.out.println("speak cliqué!!");
 		Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
 		intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
 				RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
@@ -289,6 +289,7 @@ public class LocustaMapActivityMain extends MapActivity implements OnInitListene
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if(intentTTS!=null) stopService(intentTTS);
 		if (resultCode != RESULT_OK && requestCode == VOICE_RECOGNITION_REQUEST)
 			return;
 		if (requestCode == VOICE_RECOGNITION_REQUEST && resultCode == RESULT_OK) {
@@ -299,7 +300,7 @@ public class LocustaMapActivityMain extends MapActivity implements OnInitListene
 			
 			System.out.println(firstMatch);
 			
-			Intent intentTTS = new Intent(this.getApplicationContext(), TTSService.class);
+			intentTTS = new Intent(this.getApplicationContext(), TTSService.class);
 			intentTTS.putExtra("textToSay", firstMatch);
 			startService(intentTTS);
 			
